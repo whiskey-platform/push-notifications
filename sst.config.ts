@@ -1,23 +1,19 @@
-import { SSTConfig } from 'sst';
-import { API } from './stacks/MyStack';
+import { SSTConfig } from "sst";
+import { Api } from "./stacks/Api";
+import { Web } from "./stacks/Web";
+import { Database } from "./stacks/Database";
 
 export default {
   config(_input) {
     return {
-      name: 'whiskey-push-notifications',
-      region: 'us-east-1',
+      name: "push-notifications",
+      region: "us-east-1",
     };
   },
   stacks(app) {
-    app.setDefaultFunctionProps({
-      runtime: 'nodejs18.x',
-      nodejs: {
-        esbuild: {
-          external: !app.local ? ['@aws-sdk/*'] : undefined,
-        },
-      },
-    });
-
-    app.stack(API);
-  },
+    app
+      .stack(Database)
+      .stack(Api)
+      .stack(Web);
+  }
 } satisfies SSTConfig;
