@@ -8,11 +8,10 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.114",
-    "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.15.11"
   },
   "dependencies": {
-    "jsonwebtoken": "^9.0.0",
+    "@push-notifications/core": "workspace:^0.0.0",
     "reflect-metadata": "^0.1.13",
     "sst": "^2.5.2",
     "typedi": "^0.10.0"
