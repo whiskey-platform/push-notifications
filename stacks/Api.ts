@@ -1,17 +1,30 @@
 import { use, StackContext, Api as ApiGateway } from 'sst/constructs';
+import { Secrets } from './Secrets';
+import { TopicStack } from './Topic';
 
 export function Api({ stack }: StackContext) {
+  const { DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME, AUTH_BASE_URL } = use(
+    Secrets
+  );
+  const topic = use(TopicStack);
   const api = new ApiGateway(stack, 'api', {
     defaults: {
       function: {
-        bind: [],
+        bind: [
+          DB_HOST,
+          DB_NAME,
+          DB_PASSWORD,
+          DB_USERNAME,
+          AUTH_BASE_URL,
+          topic,
+        ],
       },
     },
     routes: {
       'POST /graphql': {
         type: 'graphql',
         function: {
-          handler: 'packages/functions/src/graphql/graphql.handler',
+          handler: 'packages/api/src/graphql/graphql.handler',
         },
         pothos: {
           schema: 'packages/functions/src/graphql/schema.ts',
