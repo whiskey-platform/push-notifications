@@ -34,5 +34,9 @@ export const TopicStack = ({ stack, app }: StackContext) => {
     PUSH_KEY_ID,
   ]);
 
+  stack.addOutputs({
+    TopicArn: topic.topicArn,
+  });
+
   return topic;
 };
