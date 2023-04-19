@@ -32,3 +32,5 @@ jobs:
         id: sst-deploy
       - run: cat .sst/outputs.json
         name: Deployment Outputs
+      - run: cat packages/graphql/schema.graphql
+        name: GraphQL Schema
