@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { schema } from './schema';
 import { GraphQLHandler } from 'sst/node/graphql';
 import { AuthService } from '@push-notifications/core/services';

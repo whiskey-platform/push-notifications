@@ -52,3 +52,25 @@ export type MutationResult<fields extends MutationRequest> = FieldsSelection<
 export declare const generateMutationOp: (
   fields: MutationRequest & { __name?: string },
 ) => GraphqlOperation
+
+export declare const enumApnsConfigPushType: {
+  readonly alert: 'alert'
+  readonly background: 'background'
+  readonly complication: 'complication'
+  readonly fileprovider: 'fileprovider'
+  readonly liveactivity: 'liveactivity'
+  readonly location: 'location'
+  readonly mdm: 'mdm'
+  readonly voip: 'voip'
+}
+
+export declare const enumApsInterruptionLevel: {
+  readonly active: 'active'
+  readonly critical: 'critical'
+  readonly passive: 'passive'
+  readonly timeSensitive: 'timeSensitive'
+}
+
+export declare const enumApsSound: {
+  readonly default: 'default'
+}

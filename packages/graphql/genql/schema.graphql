@@ -1,14 +1,77 @@
-type Article {
-  id: ID!
+input APNSConfig {
+  collapseId: String
+  expiration: Int! = 0
+  notificationId: String
+  priority: Int! = 10
+  pushType: APNSConfigPushType! = alert
+}
+
+enum APNSConfigPushType {
+  alert
+  background
+  complication
+  fileprovider
+  liveactivity
+  location
+  mdm
+  voip
+}
+
+input APSAlert {
+  body: String!
+  launchImage: String
+  subtitle: String!
   title: String!
-  url: String!
+}
+
+input APSInfo {
+  alert: APSAlert
+  badge: Int
+  category: String
+  contentAvailable: Int
+  contentState: String
+  events: String
+  filterCriteria: String
+  interruptionLevel: APSInterruptionLevel
+  mutableContent: Int
+  relevanceScore: Int
+  sound: APSSound
+  staleDate: Int
+  targetContentId: String
+  threadId: String
+  timestamp: Int
+}
+
+enum APSInterruptionLevel {
+  active
+  critical
+  passive
+  timeSensitive
+}
+
+enum APSSound {
+  default
+}
+
+input AddDeviceTokenInput {
+  token: String!
 }
 
 type Mutation {
-  createArticle(title: String!, url: String!): Article!
+  addDeviceToken(input: AddDeviceTokenInput!): Boolean!
+  sendPushNotification(input: SendPushNotificationInput!): Boolean!
+}
+
+input PushNotificationBody {
+  aps: APSInfo
 }
 
 type Query {
-  article(articleID: String!): Article!
-  articles: [Article!]!
+  getDeviceTokens: [String!]!
+}
+
+input SendPushNotificationInput {
+  body: PushNotificationBody
+  config: APNSConfig
+  userId: Int
 }

@@ -20,6 +20,7 @@ importers:
     specifiers:
       '@pothos/core': ^3.29.0
       '@pothos/plugin-scope-auth': ^3.19.0
+      '@pothos/plugin-with-input': ^3.10.0
       '@push-notifications/core': workspace:^0.0.0
       '@types/aws-lambda': ^8.10.114
       '@types/node': ^18.15.11
@@ -30,6 +31,7 @@ importers:
     dependencies:
       '@pothos/core': 3.29.0_graphql@16.6.0
       '@pothos/plugin-scope-auth': 3.19.0_afzfa2yclnt4k6iuva2oo7g7bu
+      '@pothos/plugin-with-input': 3.10.0_afzfa2yclnt4k6iuva2oo7g7bu
       '@push-notifications/core': link:../core
       '@types/aws-lambda': 8.10.114
       graphql: 16.6.0
@@ -2281,6 +2283,16 @@ packages:
 
   /@pothos/plugin-scope-auth/3.19.0_afzfa2yclnt4k6iuva2oo7g7bu:
     resolution: {integrity: sha512-1NjjUh3SrKbXmcZRmJ7NaAy1GZufGwOfO+Cn8zP/IrKzrGCKoyXa+3NfIOF2q6Z+wRKivnnnzT2/Hzin2K13Sg==}
+    peerDependencies:
+      '@pothos/core': '*'
+      graphql: '>=15.1.0'
+    dependencies:
+      '@pothos/core': 3.29.0_graphql@16.6.0
+      graphql: 16.6.0
+    dev: false
+
+  /@pothos/plugin-with-input/3.10.0_afzfa2yclnt4k6iuva2oo7g7bu:
+    resolution: {integrity: sha512-FL9gKbqKy+0L77+5WPG5LeC331ztltrzZ+RtPtoYcCy3usC5HQ++9BE7DaquGmaMZ9DoHOoqSYHBlTuZ543jgg==}
     peerDependencies:
       '@pothos/core': '*'
       graphql: '>=15.1.0'

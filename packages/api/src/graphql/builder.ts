@@ -3,8 +3,9 @@ import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import { DeviceToken as DeviceToken_DB, db } from '@push-notifications/core/db';
 import { logger } from '@push-notifications/core/utils';
 import { addAddDeviceTokenMutation } from 'src/mutations/add-device-token';
+import { addSendPushNotificationMutation } from 'src/mutations/send-push-notification';
 
-export const builder = new SchemaBuilder<{
+export type SchemaBase = {
   AuthScopes: {
     isLoggedIn: boolean;
   };
@@ -12,11 +13,13 @@ export const builder = new SchemaBuilder<{
     isLoggedIn: boolean;
     userId?: number;
   };
-}>({
+};
+
+export const builder = new SchemaBuilder<SchemaBase>({
   plugins: [ScopeAuthPlugin],
   authScopes: async (context) => ({
     isLoggedIn: context.isLoggedIn,
   }),
 });
-
-addAddDeviceTokenMutation();
+builder.mutationType({ fields: (t) => ({}) });
+builder.queryType({ fields: (t) => ({}) });

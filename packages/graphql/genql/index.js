@@ -25,6 +25,28 @@ export var createClient = function(options) {
   return createClientOriginal(optionsCopy)
 }
 
+export const enumApnsConfigPushType = {
+  alert: 'alert',
+  background: 'background',
+  complication: 'complication',
+  fileprovider: 'fileprovider',
+  liveactivity: 'liveactivity',
+  location: 'location',
+  mdm: 'mdm',
+  voip: 'voip',
+}
+
+export const enumApsInterruptionLevel = {
+  active: 'active',
+  critical: 'critical',
+  passive: 'passive',
+  timeSensitive: 'timeSensitive',
+}
+
+export const enumApsSound = {
+  default: 'default',
+}
+
 export var generateQueryOp = function(fields) {
   return generateGraphqlOperation('query', typeMap.Query, fields)
 }

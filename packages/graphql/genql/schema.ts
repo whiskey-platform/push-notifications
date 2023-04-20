@@ -1,57 +1,52 @@
 import {FieldsSelection,Observable} from '@genql/runtime'
 
 export type Scalars = {
-    ID: string,
     String: string,
+    Int: number,
     Boolean: boolean,
 }
 
-export interface Article {
-    id: Scalars['ID']
-    title: Scalars['String']
-    url: Scalars['String']
-    __typename: 'Article'
-}
+export type APNSConfigPushType = 'alert' | 'background' | 'complication' | 'fileprovider' | 'liveactivity' | 'location' | 'mdm' | 'voip'
+
+export type APSInterruptionLevel = 'active' | 'critical' | 'passive' | 'timeSensitive'
+
+export type APSSound = 'default'
 
 export interface Mutation {
-    createArticle: Article
+    addDeviceToken: Scalars['Boolean']
+    sendPushNotification: Scalars['Boolean']
     __typename: 'Mutation'
 }
 
 export interface Query {
-    article: Article
-    articles: Article[]
+    getDeviceTokens: Scalars['String'][]
     __typename: 'Query'
 }
 
-export interface ArticleRequest{
-    id?: boolean | number
-    title?: boolean | number
-    url?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
+export interface APNSConfig {collapseId?: (Scalars['String'] | null),expiration: Scalars['Int'],notificationId?: (Scalars['String'] | null),priority: Scalars['Int'],pushType: APNSConfigPushType}
+
+export interface APSAlert {body: Scalars['String'],launchImage?: (Scalars['String'] | null),subtitle: Scalars['String'],title: Scalars['String']}
+
+export interface APSInfo {alert?: (APSAlert | null),badge?: (Scalars['Int'] | null),category?: (Scalars['String'] | null),contentAvailable?: (Scalars['Int'] | null),contentState?: (Scalars['String'] | null),events?: (Scalars['String'] | null),filterCriteria?: (Scalars['String'] | null),interruptionLevel?: (APSInterruptionLevel | null),mutableContent?: (Scalars['Int'] | null),relevanceScore?: (Scalars['Int'] | null),sound?: (APSSound | null),staleDate?: (Scalars['Int'] | null),targetContentId?: (Scalars['String'] | null),threadId?: (Scalars['String'] | null),timestamp?: (Scalars['Int'] | null)}
+
+export interface AddDeviceTokenInput {token: Scalars['String']}
 
 export interface MutationRequest{
-    createArticle?: [{title: Scalars['String'],url: Scalars['String']},ArticleRequest]
+    addDeviceToken?: [{input: AddDeviceTokenInput}]
+    sendPushNotification?: [{input: SendPushNotificationInput}]
     __typename?: boolean | number
     __scalar?: boolean | number
 }
+
+export interface PushNotificationBody {aps?: (APSInfo | null)}
 
 export interface QueryRequest{
-    article?: [{articleID: Scalars['String']},ArticleRequest]
-    articles?: ArticleRequest
+    getDeviceTokens?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
 
-
-const Article_possibleTypes: string[] = ['Article']
-export const isArticle = (obj?: { __typename?: any } | null): obj is Article => {
-  if (!obj?.__typename) throw new Error('__typename is missing in "isArticle"')
-  return Article_possibleTypes.includes(obj.__typename)
-}
-
+export interface SendPushNotificationInput {body?: (PushNotificationBody | null),config?: (APNSConfig | null),userId?: (Scalars['Int'] | null)}
 
 
 const Mutation_possibleTypes: string[] = ['Mutation']
@@ -69,32 +64,20 @@ export const isQuery = (obj?: { __typename?: any } | null): obj is Query => {
 }
 
 
-export interface ArticlePromiseChain{
-    id: ({get: (request?: boolean|number, defaultValue?: Scalars['ID']) => Promise<Scalars['ID']>}),
-    title: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
-    url: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>})
-}
-
-export interface ArticleObservableChain{
-    id: ({get: (request?: boolean|number, defaultValue?: Scalars['ID']) => Observable<Scalars['ID']>}),
-    title: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
-    url: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>})
-}
-
 export interface MutationPromiseChain{
-    createArticle: ((args: {title: Scalars['String'],url: Scalars['String']}) => ArticlePromiseChain & {get: <R extends ArticleRequest>(request: R, defaultValue?: FieldsSelection<Article, R>) => Promise<FieldsSelection<Article, R>>})
+    addDeviceToken: ((args: {input: AddDeviceTokenInput}) => {get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Promise<Scalars['Boolean']>}),
+    sendPushNotification: ((args: {input: SendPushNotificationInput}) => {get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Promise<Scalars['Boolean']>})
 }
 
 export interface MutationObservableChain{
-    createArticle: ((args: {title: Scalars['String'],url: Scalars['String']}) => ArticleObservableChain & {get: <R extends ArticleRequest>(request: R, defaultValue?: FieldsSelection<Article, R>) => Observable<FieldsSelection<Article, R>>})
+    addDeviceToken: ((args: {input: AddDeviceTokenInput}) => {get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Observable<Scalars['Boolean']>}),
+    sendPushNotification: ((args: {input: SendPushNotificationInput}) => {get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Observable<Scalars['Boolean']>})
 }
 
 export interface QueryPromiseChain{
-    article: ((args: {articleID: Scalars['String']}) => ArticlePromiseChain & {get: <R extends ArticleRequest>(request: R, defaultValue?: FieldsSelection<Article, R>) => Promise<FieldsSelection<Article, R>>}),
-    articles: ({get: <R extends ArticleRequest>(request: R, defaultValue?: FieldsSelection<Article, R>[]) => Promise<FieldsSelection<Article, R>[]>})
+    getDeviceTokens: ({get: (request?: boolean|number, defaultValue?: Scalars['String'][]) => Promise<Scalars['String'][]>})
 }
 
 export interface QueryObservableChain{
-    article: ((args: {articleID: Scalars['String']}) => ArticleObservableChain & {get: <R extends ArticleRequest>(request: R, defaultValue?: FieldsSelection<Article, R>) => Observable<FieldsSelection<Article, R>>}),
-    articles: ({get: <R extends ArticleRequest>(request: R, defaultValue?: FieldsSelection<Article, R>[]) => Observable<FieldsSelection<Article, R>[]>})
+    getDeviceTokens: ({get: (request?: boolean|number, defaultValue?: Scalars['String'][]) => Observable<Scalars['String'][]>})
 }
