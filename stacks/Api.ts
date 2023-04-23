@@ -18,7 +18,7 @@ export function Api({ stack, app }: StackContext) {
     },
     customDomain: !app.local
       ? {
-          path: 'auth',
+          path: 'push-notifications',
           cdk: {
             domainName: DomainName.fromDomainNameAttributes(stack, 'ApiDomain', {
               name: process.env.API_DOMAIN_NAME!,
