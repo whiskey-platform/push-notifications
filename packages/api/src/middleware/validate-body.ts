@@ -1,4 +1,5 @@
 import { MiddlewareObj } from '@middy/core';
+import { logger } from '@push-notifications/core/utils';
 import { Decoder } from '@push-notifications/defs';
 import { APIGatewayJSONBodyEvent } from 'src/utils/lambda-utils';
 
@@ -6,8 +7,10 @@ export function validateBody<S>(decoder: Decoder<S>): MiddlewareObj<APIGatewayJS
   return {
     before: async request => {
       try {
+        logger.info('Validating request body');
         decoder.decode(request.event.body);
       } catch (err) {
+        logger.info('Error validating request body', { error: err });
         const error = err as Error;
         throw {
           message: 'Validation error',

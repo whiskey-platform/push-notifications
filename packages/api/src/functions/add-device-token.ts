@@ -13,6 +13,7 @@ import {
 } from '@push-notifications/defs';
 
 const addDeviceToken: APIGatewayJSONBodyEventHandler<PostDeviceTokensRequestBody> = async event => {
+  logger.info('Begin Add Device Token request');
   const count = (
     await db
       .selectFrom('device_tokens')
@@ -20,7 +21,12 @@ const addDeviceToken: APIGatewayJSONBodyEventHandler<PostDeviceTokensRequestBody
       .where('user_id', '=', parseInt(event.headers['x-user-id']!))
       .execute()
   ).length;
+  logger.info(`User ${event.headers['x-user-id']} has ${count} device tokens`);
   try {
+    logger.info('Saving device token', {
+      userId: event.headers['x-user-id'],
+      deviceToken: event.body.token,
+    });
     await db
       .insertInto('device_tokens')
       .values({
@@ -29,6 +35,7 @@ const addDeviceToken: APIGatewayJSONBodyEventHandler<PostDeviceTokensRequestBody
         device_token: event.body.token,
       })
       .execute();
+    logger.info('Successfully saved device token to database');
     return json({ success: true });
   } catch (error) {
     logger.error('Error seving device token to DB', error);

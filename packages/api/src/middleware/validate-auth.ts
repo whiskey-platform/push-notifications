@@ -1,5 +1,6 @@
 import middy, { MiddlewareObj, Request } from '@middy/core';
 import { AuthService } from '@push-notifications/core/services';
+import { logger } from '@push-notifications/core/utils';
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import Container from 'typedi';
 
@@ -7,6 +8,8 @@ const auth = Container.get(AuthService);
 export const validateAuth = (): middy.MiddlewareObj<APIGatewayProxyEventV2> => {
   return {
     before: async (request: Request<APIGatewayProxyEventV2>) => {
+      logger.info('Validating Auth headers');
+      logger.debug('Incoming headers', { headers: request.event.headers });
       try {
         const user = await auth.getUserInfo({
           Authorization: request.event.headers.authorization,
