@@ -16,8 +16,10 @@ export const handler: SNSHandler = async event => {
     if (input.userId) deviceTokensSelect = deviceTokensSelect.where('user_id', '=', input.userId);
     const deviceTokens = await deviceTokensSelect.execute();
     logger.debug('Retrieved device tokens', { tokens: deviceTokens.map(v => v.device_token) });
-    for (const token of deviceTokens) {
-      await apns.sendNotification(input.body, token.device_token, input.config);
-    }
+    await apns.sendNotification(
+      input.body,
+      deviceTokens.map(v => v.device_token),
+      input.config
+    );
   }
 };

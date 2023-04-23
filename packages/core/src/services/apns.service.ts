@@ -1,10 +1,9 @@
-import { connect } from 'http2';
 import { Config } from 'sst/node/config';
 import { Service } from 'typedi';
 import { logger } from '../utils';
 import { APNSConfig, NotificationBody } from '@push-notifications/defs';
-import { error } from 'console';
-import { sign } from 'jsonwebtoken';
+import { JwtHeader, JwtPayload, sign } from 'jsonwebtoken';
+import { Notification, Provider } from '@parse/node-apn';
 
 const defaultConfig: APNSConfig = {
   pushType: 'alert',
@@ -12,70 +11,49 @@ const defaultConfig: APNSConfig = {
   priority: 10,
 };
 
+const apnProvider = new Provider({
+  token: {
+    key: Config.PUSH_KEY,
+    keyId: Config.PUSH_KEY_ID,
+    teamId: Config.APPLE_TEAM_ID,
+  },
+  production: false,
+});
+
 @Service()
 export class APNSService {
   public async sendNotification(
     body: NotificationBody,
-    deviceToken: string,
+    deviceTokens: string | string[],
     config?: APNSConfig
-  ): Promise<string> {
-    return new Promise((resolve, reject) => {
-      logger.info('Begin sending notification to APNS', { body, deviceToken, inputConfig: config });
-      const compiledConfig: APNSConfig = {
-        ...defaultConfig,
-        ...config,
-      };
-      const token = sign(
-        {
-          iss: Config.APPLE_TEAM_ID,
-          iat: Date.now(),
-        },
-        Config.PUSH_KEY,
-        {
-          header: {
-            alg: 'ES256',
-            kid: Config.PUSH_KEY_ID,
-          },
-        }
-      );
-      const client = connect(Config.APNS_BASE_URL);
-      logger.debug(`Connected to ${Config.APNS_BASE_URL}`);
-      client.on('error', err => {
-        logger.error('Error sending notification to APNS', { error: err });
-        client.destroy();
-        reject(err);
-      });
-      const headers: Record<string, any> = {
-        ':method': 'POST',
-        'apns-topic': Config.IOS_APP_ID,
-        ':scheme': 'https',
-        ':path': `/3/device/${deviceToken}`,
-        authorization: `bearer ${token}`,
-        'apns-push-type': compiledConfig.pushType,
-        'apns-expiration': compiledConfig.expiration,
-        'apns-priority': compiledConfig.priority,
-      };
-      if (compiledConfig.collapseId) {
-        headers['apns-collapse-id'] = compiledConfig.collapseId;
-      }
-      logger.debug('Sending headers to APNS', { headers });
-      const request = client.request(headers);
-
-      request.on('response', (headers, flags) => {
-        logger.debug('Received response from APNS', { headers, flags });
-      });
-
-      request.setEncoding('utf8');
-      let data = '';
-      request.on('data', chunk => {
-        data += chunk;
-      });
-      request.write(JSON.stringify(body));
-      request.on('end', () => {
-        logger.info('Successfully sent notification to APNS', { data });
-        client.destroy();
-        resolve(data);
-      });
+  ): Promise<void> {
+    // return new Promise((resolve, reject) => {
+    logger.info('Begin sending notification to APNS', { body, deviceTokens, inputConfig: config });
+    const compiledConfig: APNSConfig = {
+      ...defaultConfig,
+      ...config,
+    };
+    const tokenPayload: JwtPayload = {
+      iss: Config.APPLE_TEAM_ID,
+      iat: Date.now(),
+    };
+    const tokenHeaders: JwtHeader = {
+      alg: 'ES256',
+      kid: Config.PUSH_KEY_ID,
+    };
+    logger.debug('Token components', { tokenPayload, tokenHeaders, tokenKey: Config.PUSH_KEY });
+    const token = sign(tokenPayload, Config.PUSH_KEY, {
+      header: tokenHeaders,
     });
+
+    const notification = new Notification();
+    notification.rawPayload = body;
+    notification.topic = Config.IOS_APP_ID;
+    notification.expiry = compiledConfig.expiration ?? 0;
+    notification.priority = compiledConfig.priority ?? 10;
+    notification.pushType = compiledConfig.pushType ?? 'alert';
+
+    let res = await apnProvider.send(notification, deviceTokens);
+    logger.debug('response from APNS', { res });
   }
 }

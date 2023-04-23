@@ -152,7 +152,6 @@ components:
           enum:
             - 'alert'
             - 'background'
-            - 'location'
             - 'voip'
             - 'complication'
             - 'fileprovider'

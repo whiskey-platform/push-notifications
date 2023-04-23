@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-sns": "^3.312.0",
+    "@parse/node-apn": "github:mattwyskiel/node-apn#master",
     "@planetscale/database": "^1.7.0",
     "@push-notifications/defs": "link:../defs",
     "axios": "^1.3.5",
