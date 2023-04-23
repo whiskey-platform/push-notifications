@@ -1,1 +1,0 @@
-export { SendNotificationSNSMessage } from './SendNotificationSNSMessage';

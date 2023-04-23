@@ -12,16 +12,15 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "sst": "^2.5.2",
+    "@tsconfig/node16": "^1.0.3",
     "aws-cdk-lib": "2.72.1",
     "constructs": "10.1.156",
-    "typescript": "^5.0.4",
-    "@tsconfig/node16": "^1.0.3"
+    "eslint": "^8.38.0",
+    "prettier": "^2.8.7",
+    "sst": "2.5.8",
+    "typescript": "^5.0.4"
   },
   "workspaces": [
     "packages/*"
-  ],
-  "overrides": {
-    "graphql": "16.5.0"
-  }
+  ]
 }

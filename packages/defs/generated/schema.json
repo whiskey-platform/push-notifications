@@ -1,0 +1,210 @@
+{
+  "type": "object",
+  "title": "Schema",
+  "definitions": {
+    "PostNotificationsRequestBody": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "$ref": "#/definitions/NotificationBody"
+        },
+        "config": {
+          "$ref": "#/definitions/APNSConfig"
+        },
+        "userId": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "body"
+      ],
+      "$schema": "http://json-schema.org/draft-04/schema#"
+    },
+    "PostDeviceTokensRequestBody": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "token"
+      ],
+      "$schema": "http://json-schema.org/draft-04/schema#"
+    },
+    "NotificationBody": {
+      "type": "object",
+      "required": [
+        "aps"
+      ],
+      "properties": {
+        "aps": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alert": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "subtitle": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "launch-image": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "title",
+                "body"
+              ]
+            },
+            "badge": {
+              "type": "number"
+            },
+            "sound": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "critical": {
+                      "const": 1
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "volume": {
+                      "type": "number"
+                    }
+                  }
+                }
+              ],
+              "default": "default"
+            },
+            "thread-id": {
+              "type": "string"
+            },
+            "category": {
+              "type": "string"
+            },
+            "content-available": {
+              "const": 1
+            },
+            "mutable-content": {
+              "const": 1
+            },
+            "target-content-id": {
+              "type": "string"
+            },
+            "interruption-level": {
+              "enum": [
+                "passive",
+                "active",
+                "time-sensitive",
+                "critical"
+              ]
+            },
+            "relevance-score": {
+              "type": "number"
+            },
+            "filter-criteria": {
+              "type": "string"
+            },
+            "stale-date": {
+              "type": "number"
+            },
+            "content-state": {
+              "type": "object"
+            },
+            "timestamp": {
+              "type": "string"
+            },
+            "events": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "$schema": "http://json-schema.org/draft-04/schema#"
+    },
+    "APNSConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pushType": {
+          "enum": [
+            "alert",
+            "background",
+            "location",
+            "voip",
+            "complication",
+            "fileprovider",
+            "mdm",
+            "liveactivity"
+          ],
+          "default": "alert"
+        },
+        "notificationId": {
+          "type": "string"
+        },
+        "expiration": {
+          "type": "number",
+          "default": 0
+        },
+        "priority": {
+          "enum": [
+            10,
+            5,
+            1
+          ],
+          "default": 10
+        },
+        "collapseId": {
+          "type": "string"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-04/schema#"
+    },
+    "ErrorSchema": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "object"
+        },
+        "trackingId": {
+          "type": "string"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-04/schema#"
+    }
+  },
+  "properties": {
+    "PostNotificationsRequestBody": {
+      "$ref": "#/definitions/PostNotificationsRequestBody"
+    },
+    "PostDeviceTokensRequestBody": {
+      "$ref": "#/definitions/PostDeviceTokensRequestBody"
+    },
+    "NotificationBody": {
+      "$ref": "#/definitions/NotificationBody"
+    },
+    "APNSConfig": {
+      "$ref": "#/definitions/APNSConfig"
+    },
+    "ErrorSchema": {
+      "$ref": "#/definitions/ErrorSchema"
+    }
+  }
+}

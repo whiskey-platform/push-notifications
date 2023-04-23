@@ -2,24 +2,10 @@ import { connect } from 'http2';
 import { Config } from 'sst/node/config';
 import { Service } from 'typedi';
 import { logger } from '../utils';
+import { APNSConfig, NotificationBody } from '@push-notifications/defs';
 import { error } from 'console';
 import { sign } from 'jsonwebtoken';
 
-export interface APNSConfig {
-  pushType:
-    | 'alert'
-    | 'background'
-    | 'location'
-    | 'voip'
-    | 'complication'
-    | 'fileprovider'
-    | 'mdm'
-    | 'liveactivity';
-  notificationId?: string;
-  expiration: number;
-  priority: 10 | 5 | 1;
-  collapseId?: string;
-}
 const defaultConfig: APNSConfig = {
   pushType: 'alert',
   expiration: 0,
@@ -28,11 +14,7 @@ const defaultConfig: APNSConfig = {
 
 @Service()
 export class APNSService {
-  public async sendNotification(
-    body: any,
-    deviceToken: string,
-    config?: APNSConfig
-  ) {
+  public async sendNotification(body: NotificationBody, deviceToken: string, config?: APNSConfig) {
     const compiledConfig: APNSConfig = {
       ...defaultConfig,
       ...config,
@@ -51,9 +33,7 @@ export class APNSService {
       }
     );
     const client = connect(Config.APNS_BASE_URL);
-    client.on('error', (err) =>
-      logger.error('Error connecting to APNS', error)
-    );
+    client.on('error', err => logger.error('Error connecting to APNS', error));
     const headers: Record<string, any> = {
       ':method': 'POST',
       'apns-topic': Config.IOS_APP_ID,
@@ -78,7 +58,7 @@ export class APNSService {
 
     request.setEncoding('utf8');
     let data = '';
-    request.on('data', (chunk) => {
+    request.on('data', chunk => {
       data += chunk;
     });
     request.write(JSON.stringify(body));

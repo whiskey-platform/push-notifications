@@ -13,7 +13,7 @@
   "dependencies": {
     "@push-notifications/core": "workspace:^0.0.0",
     "reflect-metadata": "^0.1.13",
-    "sst": "^2.5.2",
+    "sst": "2.5.8",
     "typedi": "^0.10.0"
   }
 }

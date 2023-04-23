@@ -1,0 +1,180 @@
+openapi: 3.1.0
+info:
+  title: Whiskey Push Notifications API
+  version: 0.0.1
+paths:
+  /notifications:
+    post:
+      summary: Send a Push Notification
+      description:
+        Forwards the input Push Notification body to an SNS topic that will submit it to the Apple
+        Push Notifications Service (APNS)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostNotificationsRequestBody'
+      responses:
+        '200':
+          description: The push notification was forwarded successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    const: true
+                  message:
+                    type: string
+                    const: 'Notification successfully sent to Topic for processing'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+  /device-tokens:
+    post:
+      summary: Add a device token
+      description:
+        Saves a device token from iOS APNS registration to the database. These will be used to send
+        notifications.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDeviceTokensRequestBody'
+      responses:
+        '200':
+          description: The device token was saved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    const: true
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+
+components:
+  schemas:
+    PostNotificationsRequestBody:
+      type: object
+      properties:
+        body:
+          $ref: '#/components/schemas/NotificationBody'
+        config:
+          $ref: '#/components/schemas/APNSConfig'
+        userId:
+          type: integer
+      required:
+        - body
+    PostDeviceTokensRequestBody:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+        - token
+
+    NotificationBody:
+      type: 'object'
+      required: ['aps']
+      properties:
+        aps:
+          type: 'object'
+          additionalProperties: false
+          properties:
+            alert:
+              type: 'object'
+              additionalProperties: false
+              properties:
+                title:
+                  type: 'string'
+                subtitle:
+                  type: 'string'
+                body:
+                  type: 'string'
+                'launch-image':
+                  type: 'string'
+              required: ['title', 'body']
+            badge:
+              type: 'number'
+            sound:
+              anyOf:
+                - type: 'string'
+                - type: 'object'
+                  additionalProperties: false
+                  properties:
+                    critical:
+                      const: 1
+                    name:
+                      type: 'string'
+                    volume:
+                      type: 'number'
+              default: 'default'
+            'thread-id':
+              type: 'string'
+            category:
+              type: 'string'
+            'content-available':
+              const: 1
+            'mutable-content':
+              const: 1
+            'target-content-id':
+              type: 'string'
+            'interruption-level':
+              enum: ['passive', 'active', 'time-sensitive', 'critical']
+            'relevance-score':
+              type: 'number'
+            'filter-criteria':
+              type: 'string'
+            'stale-date':
+              type: 'number'
+            'content-state':
+              type: 'object'
+            timestamp:
+              type: 'string'
+            events:
+              type: 'string'
+    APNSConfig:
+      type: 'object'
+      additionalProperties: false
+      properties:
+        pushType:
+          enum:
+            - 'alert'
+            - 'background'
+            - 'location'
+            - 'voip'
+            - 'complication'
+            - 'fileprovider'
+            - 'mdm'
+            - 'liveactivity'
+          default: 'alert'
+        notificationId:
+          type: 'string'
+        expiration:
+          type: 'number'
+          default: 0
+        priority:
+          enum: [10, 5, 1]
+          default: 10
+        collapseId:
+          type: 'string'
+    ErrorSchema:
+      type: object
+      properties:
+        message:
+          type: string
+        details:
+          type: object
+        trackingId:
+          type: string
