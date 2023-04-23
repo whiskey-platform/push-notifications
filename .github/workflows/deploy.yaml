@@ -29,6 +29,8 @@ jobs:
           role-to-assume: ${{secrets.AWS_ROLE_ARN}}
           role-session-name: whiskey-push-notifications
       - run: pnpm sst deploy --stage prod --outputs-file outputs.json
-        id: sst-deploy
-      - run: cat .sst/outputs.json
-        name: Deployment Outputs
+        env:
+          API_CERTIFICATE_ARN: ${{secrets.API_CERTIFICATE_ARN_PROD}}
+          API_REGIONAL_DOMAIN_NAME: ${{secrets.API_REGIONAL_DOMAIN_NAME_PROD}}
+          API_REGIONAL_HOSTED_ZONE_ID: ${{secrets.API_REGIONAL_HOSTED_ZONE_ID_PROD}}
+          API_DOMAIN_NAME: ${{vars.API_DOMAIN_NAME_PROD}}

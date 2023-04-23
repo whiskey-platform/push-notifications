@@ -1,6 +1,7 @@
 import { use, StackContext, Api as ApiGateway } from 'sst/constructs';
 import { Secrets } from './Secrets';
 import { TopicStack } from './Topic';
+import { DomainName } from '@aws-cdk/aws-apigatewayv2-alpha';
 
 export function Api({ stack, app }: StackContext) {
   const { DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME, AUTH_BASE_URL } = use(Secrets);
@@ -17,9 +18,14 @@ export function Api({ stack, app }: StackContext) {
     },
     customDomain: !app.local
       ? {
-          domainName: `api${app.stage !== 'prod' ? `.${app.stage}` : ''}.whiskey.mattwyskiel.com`,
-          hostedZone: 'mattwyskiel.com',
-          path: 'push-notifications',
+          path: 'auth',
+          cdk: {
+            domainName: DomainName.fromDomainNameAttributes(stack, 'ApiDomain', {
+              name: process.env.API_DOMAIN_NAME!,
+              regionalDomainName: process.env.API_REGIONAL_DOMAIN_NAME!,
+              regionalHostedZoneId: process.env.API_REGIONAL_HOSTED_ZONE_ID!,
+            }),
+          },
         }
       : undefined,
   });
