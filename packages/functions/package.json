@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@push-notifications/core": "workspace:^0.0.0",
+    "@push-notifications/defs": "link:../defs",
     "reflect-metadata": "^0.1.13",
     "sst": "2.5.8",
     "typedi": "^0.10.0"

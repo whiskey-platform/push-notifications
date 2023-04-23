@@ -15,6 +15,7 @@ const defaultConfig: APNSConfig = {
 @Service()
 export class APNSService {
   public async sendNotification(body: NotificationBody, deviceToken: string, config?: APNSConfig) {
+    logger.info('Begin sending notification to APNS', { body, deviceToken, inputConfig: config });
     const compiledConfig: APNSConfig = {
       ...defaultConfig,
       ...config,
@@ -33,7 +34,8 @@ export class APNSService {
       }
     );
     const client = connect(Config.APNS_BASE_URL);
-    client.on('error', err => logger.error('Error connecting to APNS', error));
+    logger.debug(`Connected to ${Config.APNS_BASE_URL}`);
+    client.on('error', err => logger.error('Error connecting to APNS', { error: err }));
     const headers: Record<string, any> = {
       ':method': 'POST',
       'apns-topic': Config.IOS_APP_ID,
@@ -47,13 +49,11 @@ export class APNSService {
     if (compiledConfig.collapseId) {
       headers['apns-collapse-id'] = compiledConfig.collapseId;
     }
-
+    logger.debug('Sending headers to APNS', { headers });
     const request = client.request(headers);
 
     request.on('response', (headers, flags) => {
-      for (const name in headers) {
-        console.log(`${name}: ${headers[name]}`);
-      }
+      logger.debug('Received response from APNS', { headers, flags });
     });
 
     request.setEncoding('utf8');
