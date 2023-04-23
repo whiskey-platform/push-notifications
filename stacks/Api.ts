@@ -30,9 +30,5 @@ export function Api({ stack, app }: StackContext) {
       : undefined,
   });
 
-  stack.addOutputs({
-    API: api.url,
-  });
-
   return api;
 }
