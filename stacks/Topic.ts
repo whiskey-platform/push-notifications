@@ -2,8 +2,15 @@ import { Config, StackContext, Topic, use } from 'sst/constructs';
 import { Secrets } from './Secrets';
 
 export const TopicStack = ({ stack, app }: StackContext) => {
-  const { IOS_APP_ID, DB_HOST, DB_USERNAME, DB_PASSWORD, APPLE_TEAM_ID, PUSH_KEY, PUSH_KEY_ID } =
-    use(Secrets);
+  const {
+    IOS_APP_ID,
+    DB_HOST,
+    DB_USERNAME,
+    DB_PASSWORD,
+    APPLE_TEAM_ID,
+    PUSH_KEY,
+    PUSH_KEY_ID,
+  } = use(Secrets);
   const APNS_BASE_URL = new Config.Parameter(stack, 'APNS_BASE_URL', {
     value:
       /*
@@ -31,9 +38,6 @@ export const TopicStack = ({ stack, app }: StackContext) => {
     PUSH_KEY,
     PUSH_KEY_ID,
   ]);
-  stack.addOutputs({
-    TopicArn: topic.topicArn,
-  });
 
   return topic;
 };
