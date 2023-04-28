@@ -34,6 +34,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSchema'
+    get:
+      parameters:
+        - name: excludeChannels
+          in: query
+          schema:
+            type: string
+        - name: channels
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieves push notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    category:
+                      type: string
+                    timestamp:
+                      type: integer
+                    body:
+                      $ref: '#/components/schemas/NotificationBody'
+                    config:
+                      $ref: '#/components/schemas/APNSConfig'
+                    userId:
+                      type: integer
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
   /device-tokens:
     post:
       summary: Add a device token
@@ -144,6 +180,9 @@ components:
               type: 'string'
             events:
               type: 'string'
+        channel:
+          type: string
+          default: general
     APNSConfig:
       type: 'object'
       additionalProperties: false

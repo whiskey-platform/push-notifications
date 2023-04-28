@@ -40,12 +40,12 @@ export interface NotificationBody {
     timestamp?: string;
     events?: string;
   };
+  channel?: string;
 }
 export interface APNSConfig {
   pushType?:
     | "alert"
     | "background"
-    | "location"
     | "voip"
     | "complication"
     | "fileprovider"

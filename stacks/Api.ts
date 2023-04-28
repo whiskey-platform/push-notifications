@@ -3,19 +3,22 @@ import { Secrets } from './Secrets';
 import { TopicStack } from './Topic';
 import { DomainName } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
+import { TableStack } from './Table';
 
 export function Api({ stack, app }: StackContext) {
   const { DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME, AUTH_BASE_URL } = use(Secrets);
+  const table = use(TableStack);
   const topic = use(TopicStack);
   const api = new ApiGateway(stack, 'api', {
     defaults: {
       function: {
-        bind: [DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME, AUTH_BASE_URL, topic],
+        bind: [DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME, AUTH_BASE_URL, topic, table],
       },
     },
     routes: {
       'POST /device-tokens': 'packages/api/src/functions/add-device-token.handler',
       'POST /notifications': 'packages/api/src/functions/send-push-notification.handler',
+      'GET /notifications': 'packages/api/src/functions/get-notifications.handler',
     },
     customDomain: !app.local
       ? {

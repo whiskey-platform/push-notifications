@@ -2,11 +2,13 @@ import 'reflect-metadata';
 import { SNSHandler } from 'aws-lambda';
 import { db } from '@push-notifications/core/db';
 import Container from 'typedi';
-import { APNSService } from '@push-notifications/core/services/apns.service';
+import { Table } from 'sst/node/table';
+import { APNSService, DynamoDBService } from '@push-notifications/core/services';
 import { PostNotificationsRequestBody } from '@push-notifications/defs';
 import { logger } from '@push-notifications/core/utils';
 
 const apns = Container.get(APNSService);
+const dynamodb = Container.get(DynamoDBService);
 
 export const handler: SNSHandler = async event => {
   for (const record of event.Records) {
@@ -20,6 +22,14 @@ export const handler: SNSHandler = async event => {
       input.body,
       deviceTokens.map(v => v.device_token),
       input.config
+    );
+    await dynamodb.saveItem(
+      {
+        channel: input.body.channel ?? 'general',
+        timestamp: Date.now(),
+        ...input,
+      },
+      Table.NotificationsTable.tableName
     );
   }
 };
