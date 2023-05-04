@@ -4,6 +4,7 @@ import { TopicStack } from './Topic';
 import { DomainName } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { TableStack } from './Table';
+import { Tags } from 'aws-cdk-lib';
 
 export function Api({ stack, app }: StackContext) {
   const { DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME, AUTH_BASE_URL } = use(Secrets);
@@ -42,6 +43,8 @@ export function Api({ stack, app }: StackContext) {
         }
       : undefined,
   });
+
+  stack.getAllFunctions().forEach(fn => Tags.of(fn).add('lumigo:auto-trace', 'true'));
 
   return api;
 }
