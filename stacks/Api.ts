@@ -44,7 +44,5 @@ export function Api({ stack, app }: StackContext) {
       : undefined,
   });
 
-  stack.getAllFunctions().forEach(fn => Tags.of(fn).add('lumigo:auto-trace', 'true'));
-
   return api;
 }

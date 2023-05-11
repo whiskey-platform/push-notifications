@@ -36,7 +36,5 @@ export const TopicStack = ({ stack, app }: StackContext) => {
     table,
   ]);
 
-  stack.getAllFunctions().forEach(fn => Tags.of(fn).add('lumigo:auto-trace', 'true'));
-
   return topic;
 };
