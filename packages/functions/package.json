@@ -11,10 +11,10 @@
     "@types/node": "^18.15.11"
   },
   "dependencies": {
-    "@push-notifications/core": "workspace:^0.0.0",
+    "@push-notifications/core": "link:../core",
     "@push-notifications/defs": "link:../defs",
     "reflect-metadata": "^0.1.13",
-    "sst": "2.5.8",
+    "sst": "2.10.4",
     "typedi": "^0.10.0"
   }
 }

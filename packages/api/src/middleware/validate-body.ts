@@ -1,7 +1,7 @@
 import { MiddlewareObj } from '@middy/core';
-import { logger } from '@push-notifications/core/utils';
+import { logger } from '@push-notifications/core';
 import { Decoder } from '@push-notifications/defs';
-import { APIGatewayJSONBodyEvent } from 'src/utils/lambda-utils';
+import { APIGatewayJSONBodyEvent } from '../utils/lambda-utils';
 
 export function validateBody<S>(decoder: Decoder<S>): MiddlewareObj<APIGatewayJSONBodyEvent<S>> {
   return {

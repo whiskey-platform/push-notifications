@@ -1,12 +1,10 @@
-import {
-  MessageAttributeValue,
-  PublishCommand,
-  SNSClient,
-} from '@aws-sdk/client-sns';
+import { MessageAttributeValue, PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 import { Service } from 'typedi';
 import { logger } from '../utils';
+import { tracer } from '../utils/tracer';
 
 const snsClient = new SNSClient({ region: process.env.AWS_REGION });
+tracer.captureAWSv3Client(snsClient);
 
 @Service()
 export class SNSService {

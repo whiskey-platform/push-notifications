@@ -1,10 +1,16 @@
 import { Service } from 'typedi';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, ExecuteStatementCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { tracer } from '../utils/tracer';
 
 @Service()
 export class DynamoDBService {
-  docClient = DynamoDBDocumentClient.from(new DynamoDBClient({ region: process.env.AWS_REGION }));
+  private docClient: DynamoDBDocumentClient;
+  constructor() {
+    const dynamo = new DynamoDBClient({ region: process.env.AWS_REGION });
+    tracer.captureAWSv3Client(dynamo);
+    this.docClient = DynamoDBDocumentClient.from(dynamo);
+  }
   public async saveItem(Item: any, TableName: string) {
     const saveRequest = new PutCommand({
       Item,

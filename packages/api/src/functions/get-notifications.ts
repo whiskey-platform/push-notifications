@@ -1,11 +1,10 @@
 import 'reflect-metadata';
-import { DynamoDBService } from '@push-notifications/core/services';
+import { DynamoDBService, wrapped } from '@push-notifications/core';
 import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 import Container from 'typedi';
 import { Table } from 'sst/node/table';
-import middy from '@middy/core';
-import requestMonitoring from 'src/middleware/request-monitoring';
-import { validateAuth } from 'src/middleware/validate-auth';
+import { validateAuth } from '../middleware/validate-auth';
+import responseMonitoring from '../middleware/response-monitoring';
 
 const dynamodb = Container.get(DynamoDBService);
 
@@ -41,4 +40,4 @@ const getNotifications: APIGatewayProxyHandlerV2 = async event => {
   }
 };
 
-export const handler = middy(getNotifications).use(requestMonitoring()).use(validateAuth());
+export const handler = wrapped(getNotifications).use(responseMonitoring()).use(validateAuth());

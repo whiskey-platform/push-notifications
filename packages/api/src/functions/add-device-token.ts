@@ -1,16 +1,15 @@
 import 'reflect-metadata';
-import middy from '@middy/core';
 import jsonBodyParser from '@middy/http-json-body-parser';
-import { APIGatewayJSONBodyEventHandler, json } from 'src/utils/lambda-utils';
-import requestMonitoring from 'src/middleware/request-monitoring';
-import { validateAuth } from 'src/middleware/validate-auth';
-import { logger } from '@push-notifications/core/utils';
-import { db } from '@push-notifications/core/db';
-import { validateBody } from 'src/middleware/validate-body';
+import { APIGatewayJSONBodyEventHandler, json } from '../utils/lambda-utils';
+import { validateAuth } from '../middleware/validate-auth';
+import { logger, wrapped } from '@push-notifications/core';
+import { db } from '@push-notifications/core';
+import { validateBody } from '../middleware/validate-body';
 import {
   PostDeviceTokensRequestBody,
   PostDeviceTokensRequestBodyDecoder,
 } from '@push-notifications/defs';
+import responseMonitoring from '../middleware/response-monitoring';
 
 const addDeviceToken: APIGatewayJSONBodyEventHandler<PostDeviceTokensRequestBody> = async event => {
   logger.info('Begin Add Device Token request');
@@ -39,15 +38,15 @@ const addDeviceToken: APIGatewayJSONBodyEventHandler<PostDeviceTokensRequestBody
       logger.info('Successfully saved device token to database');
       return json({ success: true });
     } catch (error) {
-      logger.error('Error seving device token to DB', error);
+      logger.error('Error seving device token to DB', error as Error);
       return json({ success: false });
     }
   }
   return json({ success: true });
 };
 
-export const handler = middy(addDeviceToken)
-  .use(requestMonitoring())
+export const handler = wrapped(addDeviceToken)
+  .use(responseMonitoring())
   .use(jsonBodyParser())
   .use(validateAuth())
   .use(validateBody(PostDeviceTokensRequestBodyDecoder));

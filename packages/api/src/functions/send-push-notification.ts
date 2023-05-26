@@ -1,20 +1,22 @@
 import 'reflect-metadata';
-import { SNSService } from '@push-notifications/core/services';
+import { SNSService, wrapped } from '@push-notifications/core';
 import Container from 'typedi';
-import { APIGatewayJSONBodyEventHandler, json } from 'src/utils/lambda-utils';
+import { APIGatewayJSONBodyEventHandler, json } from '../utils/lambda-utils';
 import { Topic } from 'sst/node/topic';
 import middy from '@middy/core';
-import requestMonitoring from 'src/middleware/request-monitoring';
 import jsonBodyParser from '@middy/http-json-body-parser';
 import {
   PostNotificationsRequestBody,
   PostNotificationsRequestBodyDecoder,
 } from '@push-notifications/defs';
-import { validateBody } from 'src/middleware/validate-body';
+import { validateBody } from '../middleware/validate-body';
+import responseMonitoring from '../middleware/response-monitoring';
 
 const sns = Container.get(SNSService);
 
-const sendPushNotification: APIGatewayJSONBodyEventHandler<PostNotificationsRequestBody> = async event => {
+const sendPushNotification: APIGatewayJSONBodyEventHandler<
+  PostNotificationsRequestBody
+> = async event => {
   await sns.publishEvent(event.body, Topic.NotificationsTopic.topicArn);
   return json({
     success: true,
@@ -22,7 +24,7 @@ const sendPushNotification: APIGatewayJSONBodyEventHandler<PostNotificationsRequ
   });
 };
 
-export const handler = middy(sendPushNotification)
-  .use(requestMonitoring())
+export const handler = wrapped(sendPushNotification)
+  .use(responseMonitoring())
   .use(jsonBodyParser())
   .use(validateBody(PostNotificationsRequestBodyDecoder));

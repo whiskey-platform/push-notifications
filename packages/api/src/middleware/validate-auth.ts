@@ -1,7 +1,7 @@
-import middy, { MiddlewareObj, Request } from '@middy/core';
-import { AuthService } from '@push-notifications/core/services';
-import { logger } from '@push-notifications/core/utils';
-import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
+import middy, { Request } from '@middy/core';
+import { AuthService } from '@push-notifications/core';
+import { logger } from '@push-notifications/core';
+import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import Container from 'typedi';
 
 const auth = Container.get(AuthService);

@@ -1,5 +1,4 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2, Handler } from 'aws-lambda';
-import { FromSchema } from 'json-schema-to-ts';
 
 export type APIGatewayJSONBodyEvent<S> = Omit<APIGatewayProxyEventV2, 'body'> & {
   body: S;

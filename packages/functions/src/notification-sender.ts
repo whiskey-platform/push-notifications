@@ -1,16 +1,16 @@
 import 'reflect-metadata';
 import { SNSHandler } from 'aws-lambda';
-import { db } from '@push-notifications/core/db';
+import { db, wrapped } from '@push-notifications/core';
 import Container from 'typedi';
 import { Table } from 'sst/node/table';
-import { APNSService, DynamoDBService } from '@push-notifications/core/services';
+import { APNSService, DynamoDBService } from '@push-notifications/core';
 import { PostNotificationsRequestBody } from '@push-notifications/defs';
-import { logger } from '@push-notifications/core/utils';
+import { logger } from '@push-notifications/core';
 
 const apns = Container.get(APNSService);
 const dynamodb = Container.get(DynamoDBService);
 
-export const handler: SNSHandler = async event => {
+const notificationSender: SNSHandler = async event => {
   for (const record of event.Records) {
     const input: PostNotificationsRequestBody = JSON.parse(record.Sns.Message);
     logger.info('New SNS message', { input });
@@ -33,3 +33,5 @@ export const handler: SNSHandler = async event => {
     );
   }
 };
+
+export const handler = wrapped(notificationSender);
