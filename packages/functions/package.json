@@ -14,7 +14,7 @@
     "@push-notifications/core": "link:../core",
     "@push-notifications/defs": "link:../defs",
     "reflect-metadata": "^0.1.13",
-    "sst": "2.10.4",
+    "sst": "2.41.4",
     "typedi": "^0.10.0"
   }
 }

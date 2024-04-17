@@ -14,7 +14,7 @@ import responseMonitoring from '../middleware/response-monitoring';
 const addDeviceToken: APIGatewayJSONBodyEventHandler<PostDeviceTokensRequestBody> = async event => {
   logger.info('Begin Add Device Token request');
   const tokens = await db
-    .selectFrom('device_tokens')
+    .selectFrom('whiskey-push-notifications.device_tokens')
     .select(['device_token'])
     .where('user_id', '=', parseInt(event.headers['x-user-id']!))
     .execute();
@@ -28,7 +28,7 @@ const addDeviceToken: APIGatewayJSONBodyEventHandler<PostDeviceTokensRequestBody
         deviceToken: event.body.token,
       });
       await db
-        .insertInto('device_tokens')
+        .insertInto('whiskey-push-notifications.device_tokens')
         .values({
           user_id: parseInt(event.headers['x-user-id']!),
           index: count,
